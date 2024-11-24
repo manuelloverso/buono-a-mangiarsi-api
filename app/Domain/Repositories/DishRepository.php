@@ -3,6 +3,8 @@
 namespace App\Domain\Repositories;
 
 use App\Domain\Aggregates\DishAggregateRoot;
+use App\Models\Dish;
+use Exception;
 
 class DishRepository
 {
@@ -16,9 +18,16 @@ class DishRepository
         //
     }
 
-    public function store(DishAggregateRoot $aggregate): bool
+    public function store($params, $aggregate): bool
     {
-        return false;
+        try {
+            $dish = Dish::create($params);
+            $aggregate->id = $dish->id;
+        } catch (Exception $e) {
+            $aggregate->id = null;
+            return false;
+        }
+        return true;
     }
 
     public function update(DishAggregateRoot $aggregate): bool

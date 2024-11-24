@@ -36,7 +36,12 @@ class DishController extends Controller
 
         //store the record
         $repository = new DishRepository();
-        $result = $repository->store($aggregate);
+        $result = $repository->store($params, $aggregate);
+
+        //handle response
+        if ($result) {
+        } else {
+        }
     }
 
     /**
