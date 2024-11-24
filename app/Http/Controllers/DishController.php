@@ -7,6 +7,7 @@ use App\Domain\Repositories\DishRepository;
 use App\Models\Dish;
 use App\Http\Requests\StoreDishRequest;
 use App\Http\Requests\UpdateDishRequest;
+use App\Http\Resources\DishCollection;
 use App\Http\Resources\DishResource;
 use App\Http\Resources\ErrorResource;
 
@@ -15,7 +16,16 @@ class DishController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index()
+    {
+        $repository = new DishRepository();
+        $dishes =  $repository->getAll([]);
+        if ($dishes) {
+            return new DishCollection($dishes);
+        } else {
+            return new ErrorResource(400, 'Something went wrong in fetching dishes');
+        }
+    }
 
     /**
      * Show the form for creating a new resource.

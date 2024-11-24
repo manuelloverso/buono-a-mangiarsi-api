@@ -10,7 +10,12 @@ class DishRepository
 {
     public function getAll(array $filters)
     {
-        //
+        try {
+            $dishes = Dish::all();
+            return $dishes;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function getDetail(string $id)
