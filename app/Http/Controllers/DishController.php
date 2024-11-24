@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Aggregates\DishAggregateRoot;
+use App\Domain\Repositories\DishRepository;
 use App\Models\Dish;
 use App\Http\Requests\StoreDishRequest;
 use App\Http\Requests\UpdateDishRequest;
@@ -11,10 +13,7 @@ class DishController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -29,7 +28,15 @@ class DishController extends Controller
      */
     public function store(StoreDishRequest $request)
     {
-        //
+        $params = $request->all();
+
+        //create aggregate
+        $aggregate = new DishAggregateRoot();
+        $aggregate->create($params);
+
+        //store the record
+        $repository = new DishRepository();
+        $result = $repository->store($aggregate);
     }
 
     /**
