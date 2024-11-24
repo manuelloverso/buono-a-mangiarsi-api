@@ -7,6 +7,7 @@ use App\Domain\Repositories\DishRepository;
 use App\Models\Dish;
 use App\Http\Requests\StoreDishRequest;
 use App\Http\Requests\UpdateDishRequest;
+use App\Http\Resources\DishResource;
 
 class DishController extends Controller
 {
@@ -40,6 +41,7 @@ class DishController extends Controller
 
         //handle response
         if ($result) {
+            return new DishResource($aggregate);
         } else {
         }
     }
