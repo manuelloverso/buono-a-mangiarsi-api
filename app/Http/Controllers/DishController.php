@@ -28,18 +28,11 @@ class DishController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreDishRequest $request)
     {
+        //im using the aggregate only here even tho i wouldnt need it
         $params = $request->all();
 
         //create aggregate
@@ -61,17 +54,16 @@ class DishController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Dish $dish)
+    public function show(int $id)
     {
-        //
-    }
+        $repository = new DishRepository();
+        $dish = $repository->getDetail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Dish $dish)
-    {
-        //
+        if ($dish) {
+            return new DishResource($dish);
+        } else {
+            return new ErrorResource(400, 'Something went wrong in fetching the dish');
+        }
     }
 
     /**

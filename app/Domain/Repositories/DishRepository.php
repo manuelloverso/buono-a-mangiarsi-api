@@ -18,9 +18,14 @@ class DishRepository
         }
     }
 
-    public function getDetail(string $id)
+    public function getDetail(int $id)
     {
-        //
+        try {
+            $dish = Dish::find($id);
+            return $dish;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function store($params, $aggregate): bool
