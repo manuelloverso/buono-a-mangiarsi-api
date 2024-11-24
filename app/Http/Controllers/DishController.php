@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\Aggregates\DishAggregateRoot;
 use App\Domain\Repositories\DishRepository;
-use App\Models\Dish;
 use App\Http\Requests\StoreDishRequest;
 use App\Http\Requests\UpdateDishRequest;
 use App\Http\Resources\DishCollection;
@@ -21,9 +20,9 @@ class DishController extends Controller
         $repository = new DishRepository();
         $dishes =  $repository->getAll([]);
         if ($dishes) {
-            return new DishCollection($dishes);
+            return response(new DishCollection($dishes));
         } else {
-            return new ErrorResource(400, 'Something went wrong in fetching dishes');
+            return response(new ErrorResource(400, 'Something went wrong in fetching dishes'), 400);
         }
     }
 
@@ -45,9 +44,9 @@ class DishController extends Controller
 
         //handle response
         if ($result) {
-            return new DishResource($aggregate);
+            return response(new DishResource($aggregate));
         } else {
-            return new ErrorResource(400, 'Dish storing wasnt successfull');
+            return response(new ErrorResource(400, 'Dish storing wasnt successfull'), 400);
         }
     }
 
@@ -60,24 +59,38 @@ class DishController extends Controller
         $dish = $repository->getDetail($id);
 
         if ($dish) {
-            return new DishResource($dish);
+            return response(new DishResource($dish));
         } else {
-            return new ErrorResource(400, 'Something went wrong in fetching the dish');
+            return response(new ErrorResource(400, 'Something went wrong in fetching the dish'), 400);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDishRequest $request, Dish $dish)
+    public function update(UpdateDishRequest $request, string $id)
     {
-        //
+        $params = $request->all();
+        $params['id'] = $id;
+
+        $aggregate = new DishAggregateRoot($params);
+
+        $repository = new DishRepository();
+        $result = $repository->update($params, $id);
+
+        if ($result['success']) {
+            return response(new DishResource($aggregate));
+        } else if ($result['status'] == 404) {
+            return response(new ErrorResource(404, 'Dish not found'), 404);
+        } else {
+            return response(new ErrorResource(400, 'Something went wrong in updating the dish'), 400);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dish $dish)
+    public function destroy(int $id)
     {
         //
     }

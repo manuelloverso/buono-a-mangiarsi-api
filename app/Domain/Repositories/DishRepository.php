@@ -40,9 +40,19 @@ class DishRepository
         return true;
     }
 
-    public function update(DishAggregateRoot $aggregate): bool
+    public function update(array $params, int $id)
     {
-        return false;
+        try {
+            $dish = Dish::find($id);
+            if ($dish) {
+                $dish->update($params);
+            } else {
+                return ['success' => false, 'status' => 404];
+            }
+        } catch (Exception $e) {
+            return ['success' => false, 'status' => 400];
+        }
+        return ['success' => true, 'status' => 200];
     }
 
     public function delete(string $id): bool
