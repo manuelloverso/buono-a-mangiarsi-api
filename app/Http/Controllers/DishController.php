@@ -8,6 +8,7 @@ use App\Models\Dish;
 use App\Http\Requests\StoreDishRequest;
 use App\Http\Requests\UpdateDishRequest;
 use App\Http\Resources\DishResource;
+use App\Http\Resources\ErrorResource;
 
 class DishController extends Controller
 {
@@ -43,6 +44,7 @@ class DishController extends Controller
         if ($result) {
             return new DishResource($aggregate);
         } else {
+            return new ErrorResource(400, 'Dish storing wasnt successfull');
         }
     }
 
